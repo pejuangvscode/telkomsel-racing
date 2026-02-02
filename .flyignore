@@ -1,0 +1,15 @@
+# Fly.io ignore file
+__pycache__/
+*.py[cod]
+*$py.class
+.git/
+.gitignore
+.vscode/
+.idea/
+*.md
+venv/
+env/
+ENV/
+.DS_Store
+Thumbs.db
+game_scores.json
