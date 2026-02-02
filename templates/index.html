@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <title>Telkomsel FleetSight Racing</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&family=Russo+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body>
+    <!-- THREE.JS Container -->
+    <div id="gameContainer"></div>
+    
+    <!-- Speed Lines Overlay -->
+    <div id="speedLines"></div>
+    
+    <!-- Vignette Effect -->
+    <div class="vignette"></div>
+
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <!-- LOADING SCREEN -->
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <div id="loadingScreen" class="screen">
+        <div class="loading-bg">
+            <div class="loading-particles"></div>
+        </div>
+        <div class="loading-content">
+            <div class="loader-ring">
+                <div class="ring"></div>
+                <div class="ring"></div>
+                <div class="ring"></div>
+                <div class="logo-center">T</div>
+            </div>
+            <h1 class="loader-title">FLEETSIGHT</h1>
+            <div class="loader-subtitle">R A C I N G</div>
+            <div class="loader-bar">
+                <div class="loader-progress" id="loaderProgress"></div>
+            </div>
+            <div class="loader-percent" id="loaderPercent">0%</div>
+        </div>
+        <div class="loading-footer">
+            <span>TELKOMSEL ENTERPRISE</span>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <!-- MAIN MENU SCREEN -->
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <div id="menuScreen" class="screen hidden">
+        <div class="menu-bg">
+            <video autoplay muted loop playsinline class="bg-video" id="bgVideo">
+                <source src="" type="video/mp4">
+            </video>
+            <div class="bg-overlay"></div>
+            <div class="bg-grid"></div>
+        </div>
+        
+        <div class="menu-content">
+            <!-- Header -->
+            <header class="menu-header">
+                <div class="brand-mark">
+                    <div class="brand-icon">T</div>
+                    <div class="brand-info">
+                        <span class="brand-sub">TELKOMSEL ENTERPRISE</span>
+                        <span class="brand-name">FleetSight</span>
+                    </div>
+                </div>
+                <div class="header-stats">
+                    <div class="stat-box">
+                        <span class="stat-icon">🏆</span>
+                        <span class="stat-val" id="menuBestScore">0</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Title -->
+            <div class="menu-title-section">
+                <div class="title-glow"></div>
+                <div class="title-pre">FLEET</div>
+                <h1 class="title-main">RACING</h1>
+                <div class="title-badge">3D</div>
+            </div>
+
+            <!-- Vehicle Showcase -->
+            <div class="vehicle-showcase">
+                <div class="showcase-glow"></div>
+                <div class="vehicle-display">
+                    <div class="vehicle-model">🚛</div>
+                    <div class="vehicle-shadow"></div>
+                </div>
+                <div class="vehicle-info">
+                    <div class="vehicle-name">ENTERPRISE TRUCK</div>
+                    <div class="vehicle-class">FLEET CLASS</div>
+                    <div class="vehicle-bars">
+                        <div class="bar-item">
+                            <span class="bar-label">SPEED</span>
+                            <div class="bar-track"><div class="bar-fill" style="width:78%"></div></div>
+                            <span class="bar-val">78</span>
+                        </div>
+                        <div class="bar-item">
+                            <span class="bar-label">ACCEL</span>
+                            <div class="bar-track"><div class="bar-fill" style="width:85%"></div></div>
+                            <span class="bar-val">85</span>
+                        </div>
+                        <div class="bar-item">
+                            <span class="bar-label">NITRO</span>
+                            <div class="bar-track"><div class="bar-fill nitro" style="width:92%"></div></div>
+                            <span class="bar-val">92</span>
+                        </div>
+                        <div class="bar-item">
+                            <span class="bar-label">CONTROL</span>
+                            <div class="bar-track"><div class="bar-fill" style="width:70%"></div></div>
+                            <span class="bar-val">70</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Play Button -->
+            <button class="play-button" id="playButton">
+                <div class="btn-bg"></div>
+                <div class="btn-glow"></div>
+                <span class="btn-icon">▶</span>
+                <span class="btn-text">START RACE</span>
+            </button>
+
+            <!-- Controls -->
+            <div class="controls-info">
+                <div class="ctrl">
+                    <kbd>←</kbd><kbd>→</kbd>
+                    <span>STEER</span>
+                </div>
+                <div class="ctrl">
+                    <kbd>↑</kbd>
+                    <span>GAS</span>
+                </div>
+                <div class="ctrl">
+                    <kbd>↓</kbd>
+                    <span>BRAKE</span>
+                </div>
+                <div class="ctrl">
+                    <kbd>SPACE</kbd>
+                    <span>NITRO</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <!-- COUNTDOWN OVERLAY -->
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <div id="countdownOverlay" class="countdown hidden">
+        <div class="countdown-num" id="countdownNum">3</div>
+        <div class="countdown-text">GET READY</div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <!-- GAME HUD -->
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <div id="gameHUD" class="hud hidden">
+        <!-- Top Bar -->
+        <div class="hud-top">
+            <div class="hud-left-panel">
+                <div class="info-card score-card">
+                    <div class="card-label">SCORE</div>
+                    <div class="card-value" id="hudScore">0</div>
+                </div>
+                <div class="info-card dist-card">
+                    <div class="card-label">DISTANCE</div>
+                    <div class="card-value"><span id="hudDist">0.0</span><small>KM</small></div>
+                </div>
+            </div>
+            
+            <div class="hud-center-panel">
+                <div class="speed-hud">
+                    <div class="speed-num" id="hudSpeedNum">0</div>
+                    <div class="speed-unit">KM/H</div>
+                </div>
+            </div>
+            
+            <div class="hud-right-panel">
+                <div class="brand-mini">
+                    <span class="mini-logo">T</span>
+                    <span class="mini-text">FleetSight</span>
+                </div>
+                <button class="sound-btn" id="soundBtn" title="Toggle Sound">🔊</button>
+                <button class="pause-btn" id="pauseBtn">❚❚</button>
+            </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="hud-bottom">
+            <!-- Nitro -->
+            <div class="nitro-panel">
+                <div class="nitro-icon">🔥</div>
+                <div class="nitro-container">
+                    <div class="nitro-bar">
+                        <div class="nitro-fill" id="nitroFill"></div>
+                        <div class="nitro-glow"></div>
+                    </div>
+                    <div class="nitro-segments"><i></i><i></i><i></i><i></i></div>
+                </div>
+                <div class="nitro-key">SPACE</div>
+            </div>
+
+            <!-- Speedometer -->
+            <div class="speedometer">
+                <svg class="speedo-svg" viewBox="0 0 200 200">
+                    <defs>
+                        <linearGradient id="speedGrad" x1="0%" y1="100%" x2="100%" y2="0%">
+                            <stop offset="0%" stop-color="#00ff88"/>
+                            <stop offset="50%" stop-color="#ffcc00"/>
+                            <stop offset="100%" stop-color="#ff0055"/>
+                        </linearGradient>
+                    </defs>
+                    <circle class="speedo-bg" cx="100" cy="100" r="90"/>
+                    <circle class="speedo-progress" id="speedoProgress" cx="100" cy="100" r="90"/>
+                    <circle class="speedo-inner" cx="100" cy="100" r="70"/>
+                </svg>
+                <div class="speedo-display">
+                    <div class="speedo-value" id="speedoValue">0</div>
+                    <div class="speedo-label">KM/H</div>
+                </div>
+                <div class="speedo-max">MAX <span id="speedoMax">0</span></div>
+                <div class="speedo-ticks">
+                    <span style="--r:-60deg">0</span>
+                    <span style="--r:-20deg">100</span>
+                    <span style="--r:20deg">200</span>
+                    <span style="--r:60deg">300</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Controls -->
+        <div class="mobile-controls" id="mobileControls">
+            <button class="m-btn m-left" id="mLeft">◀</button>
+            <button class="m-btn m-right" id="mRight">▶</button>
+            <button class="m-btn m-nitro" id="mNitro">🔥</button>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <!-- PAUSE SCREEN -->
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <div id="pauseScreen" class="screen pause-screen hidden">
+        <div class="pause-blur"></div>
+        <div class="pause-box">
+            <h2 class="pause-title">PAUSED</h2>
+            <div class="pause-stats">
+                <div class="p-stat"><span id="pScore">0</span><small>SCORE</small></div>
+                <div class="p-stat"><span id="pDist">0</span><small>KM</small></div>
+            </div>
+            <div class="pause-btns">
+                <button class="p-btn resume" id="resumeBtn">▶ RESUME</button>
+                <button class="p-btn quit" id="quitBtn">✕ QUIT</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <!-- GAME OVER SCREEN -->
+    <!-- ══════════════════════════════════════════════════════════════ -->
+    <div id="gameOverScreen" class="screen gameover hidden">
+        <div class="go-bg"></div>
+        <div class="go-content">
+            <!-- Result Header -->
+            <div class="go-header">
+                <div class="go-flag">🏁</div>
+                <h1 class="go-title">RACE COMPLETE</h1>
+            </div>
+
+            <!-- Stats Grid -->
+            <div class="go-stats">
+                <div class="go-stat">
+                    <div class="gs-icon">🏆</div>
+                    <div class="gs-value" id="goScore">0</div>
+                    <div class="gs-label">FINAL SCORE</div>
+                </div>
+                <div class="go-stat featured">
+                    <div class="gs-icon">🛣️</div>
+                    <div class="gs-value" id="goDist">0</div>
+                    <div class="gs-label">DISTANCE (KM)</div>
+                </div>
+                <div class="go-stat">
+                    <div class="gs-icon">⚡</div>
+                    <div class="gs-value" id="goSpeed">0</div>
+                    <div class="gs-label">TOP SPEED</div>
+                </div>
+            </div>
+
+            <!-- FleetSight Promo -->
+            <div class="promo-panel">
+                <div class="promo-head">
+                    <div class="promo-logo-box">
+                        <span>T</span>
+                    </div>
+                    <div class="promo-titles">
+                        <span class="promo-sub">TELKOMSEL ENTERPRISE</span>
+                        <span class="promo-main">FleetSight</span>
+                    </div>
+                </div>
+                <div class="promo-tag">Optimize Your Fleet, Maximize Your Profit</div>
+                <div class="promo-grid">
+                    <div class="promo-item">
+                        <span class="pi-icon">📍</span>
+                        <div class="pi-info">
+                            <strong>Real-Time Tracking</strong>
+                            <span>24/7 GPS Monitoring</span>
+                        </div>
+                    </div>
+                    <div class="promo-item">
+                        <span class="pi-icon">🛣️</span>
+                        <div class="pi-info">
+                            <strong>Route Optimization</strong>
+                            <span>AI-Powered Routing</span>
+                        </div>
+                    </div>
+                    <div class="promo-item">
+                        <span class="pi-icon">📊</span>
+                        <div class="pi-info">
+                            <strong>Analytics Dashboard</strong>
+                            <span>Data-Driven Insights</span>
+                        </div>
+                    </div>
+                    <div class="promo-item">
+                        <span class="pi-icon">⛽</span>
+                        <div class="pi-info">
+                            <strong>Fuel Efficiency</strong>
+                            <span>Save Up To 30%</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="promo-contact">
+                    <span>📞 147</span>
+                    <span>🌐 enterprise.telkomsel.com</span>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="go-actions">
+                <button class="go-btn primary" id="retryBtn">
+                    <span class="gb-icon">🔄</span>
+                    <span class="gb-text">RACE AGAIN</span>
+                </button>
+                <button class="go-btn secondary" id="menuBtn">
+                    <span class="gb-icon">🏠</span>
+                    <span class="gb-text">MAIN MENU</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Boost Effect Overlay -->
+    <div id="boostOverlay" class="boost-overlay"></div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="/static/js/game.js"></script>
+</body>
+</html>
